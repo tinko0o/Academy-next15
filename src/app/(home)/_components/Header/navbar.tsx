@@ -9,6 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useAuthUser } from "@/hooks/authentication";
 import { User } from "@/types";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -16,9 +17,10 @@ import { AlignJustify, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 const NavBar = () => {
   //
-  const queryClient = useQueryClient();
-  const user = queryClient.getQueryData<User>(["authUser"]);
-
+  // const queryClient = useQueryClient();
+  // const user = queryClient.getQueryData<User>(["authUser"]);
+  const { data: user, isLoading, isError, error, refetch } = useAuthUser();
+  console.log(user);
   return (
     <div className="flex w-full items-center justify-between px-4">
       <Search glass={true} placeholder="Search for anything" />

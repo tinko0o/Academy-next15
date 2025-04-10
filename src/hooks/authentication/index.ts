@@ -1,17 +1,16 @@
 // import { onSignUpUser } from "@/actions/auth"
 import { SignUpSchema } from "@/components/forms/sign-up/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import { useRouter } from "next/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { SignInSchema } from "../../components/forms/sign-in/schema";
-import { useState } from "react";
 
-import { ApiResponse } from "@/types";
+import { ApiResponse, User } from "@/types";
 import { useRouter } from "next/navigation";
-import { onSignIn } from "@/actions/auth";
+import { apiRequest } from "@/lib/utils";
+import { CONSTANTS } from "@/constants";
 
 export const useAuthSignIn = () => {
   const {
@@ -25,24 +24,34 @@ export const useAuthSignIn = () => {
   });
 
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const { mutate: InitiateLoginFlow, isPending } = useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      onSignIn(email, password),
-    onSuccess: (data) => {
-      if (!data) {
-        toast.error("Authentication failed");
-        return;
-      }
-      queryClient.setQueryData(["authUser"], data.user);
-      localStorage.setItem("access_token", data.accessToken);
-      reset();
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
+      return await apiRequest<{ access_token: string }>(
+        "POST",
+        CONSTANTS.api.AUTH.LOGIN,
+        {
+          email,
+          password,
+        }
+      );
+    },
 
-      toast("Success", {
-        description: "Welcome!",
-      });
+    onSuccess: (data) => {
+      localStorage.setItem("access_token", data.data?.access_token || "");
+      reset();
+      toast.success(data.message);
       router.push("/");
+    },
+    onError: (err: unknown) => {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      toast.error(errorMessage);
     },
   });
 
@@ -59,7 +68,6 @@ export const useAuthSignIn = () => {
 };
 
 export const useAuthSignUp = () => {
-  const [isPending, setIsPending] = useState<true | false>(false);
   const {
     register,
     formState: { errors },
@@ -72,104 +80,44 @@ export const useAuthSignUp = () => {
   });
 
   const router = useRouter();
+  const signUp = (values: z.infer<typeof SignUpSchema>) =>
+    apiRequest<ApiResponse<null>>("POST", CONSTANTS.api.AUTH.REGISTER, values);
 
-  const onRegisterUser = async (
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-  ) => {
-    try {
-      if (!email || !password || !firstName || !lastName) {
-        return toast("Error", {
-          description: "No fields must be empty",
-        });
-      }
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ firstName, lastName, email, password }),
-        }
-      );
-
-      if (response.status === 201) {
-        reset();
-        //
-        toast("Success", {
-          description: "Welcome!",
-        });
-        router.push(`/sign-in`);
-      } else {
-        toast.error("Authentication failed");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const onInitiateUserRegistration = handleSubmit(async (values) => {
-    setIsPending(true);
-    onRegisterUser(
-      values.firstname,
-      values.lastname,
-      values.email,
-      values.password
-    );
-    setIsPending(false);
+  const { mutate: InitiateUserRegistration, isPending } = useMutation({
+    mutationFn: signUp,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      reset();
+      router.push("/sign-in");
+    },
+    onError: (error: ApiResponse<null>) => {
+      toast.error(error.message);
+    },
+  });
+  const onSubmit = handleSubmit((values) => {
+    InitiateUserRegistration(values);
   });
 
   return {
     isPending,
     register,
     errors,
-    onInitiateUserRegistration,
+    onSubmit,
     getValues,
   };
 };
 
 export const useVerifyEmail = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const verifyEmail = async (verifyToken: string | null) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/verify-email`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ verifyToken }),
-        }
-      );
-
-      const data: ApiResponse<null> = await response.json();
-      return data;
-    } catch (error) {
-      return {
-        success: false,
-        statusCode: 500,
-        message: "Internal Server Error",
-        error: error instanceof Error ? error.message : "Unknown error",
-        data: null,
-      };
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return { isLoading, verifyEmail };
+  return useMutation({
+    mutationFn: (verifyToken: string) =>
+      apiRequest<null>("POST", CONSTANTS.api.AUTH.VERIFY_EMAIL, {
+        verifyToken,
+      }),
+  });
 };
 
 export const useOAuth = () => {
-  const googleOAuthUrl =
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/oauth2/authorization/google` || "";
+  const googleOAuthUrl = (CONSTANTS.api.OAUTH2.GOOGLE as string) || "";
 
   const signInWithGoogle = () => {
     window.location.href = googleOAuthUrl;
@@ -182,24 +130,27 @@ export const useOAuth = () => {
   return { signInWithGoogle, signInWithApple };
 };
 
-import { useQuery } from "@tanstack/react-query";
-
 export const useAuthUser = () => {
-  return useQuery({
+  return useQuery<User>({
     queryKey: ["authUser"],
     queryFn: async () => {
       const token = localStorage.getItem("access_token");
       if (!token) throw new Error("Chưa đăng nhập");
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/me`,
+      const res = await apiRequest<User>(
+        "GET",
+        CONSTANTS.api.USER.INFORMATION,
+        undefined,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          Authorization: `Bearer ${token}`,
         }
       );
 
-      if (!response.ok) throw new Error("Phiên đăng nhập hết hạn");
-      return response.json();
+      if (!res.success || !res.data) {
+        throw new Error(res.message || "Phiên đăng nhập hết hạn");
+      }
+
+      return res.data;
     },
     staleTime: 1000 * 60 * 5, // 5 phút
   });

@@ -2,19 +2,14 @@
 import { FormGenerator } from "@/components/global/form-generator";
 import { Loader } from "@/components/global/loader";
 import { Button } from "@/components/ui/button";
-import { GROUPLE_CONSTANTS } from "@/constants";
+import { CONSTANTS } from "@/constants";
 import { useAuthSignUp } from "@/hooks/authentication";
 
 const SignUpForm = () => {
-  const { isPending, onInitiateUserRegistration, register, errors } =
-    useAuthSignUp();
-
+  const { isPending, register, errors, onSubmit } = useAuthSignUp();
   return (
-    <form
-      className="flex flex-col gap-3 "
-      onSubmit={onInitiateUserRegistration}
-    >
-      {GROUPLE_CONSTANTS.signUpForm.map((field) => (
+    <form className="flex flex-col gap-3 " onSubmit={onSubmit}>
+      {CONSTANTS.signUpForm.map((field) => (
         <FormGenerator
           {...field}
           key={field.id}
