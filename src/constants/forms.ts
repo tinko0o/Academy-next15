@@ -68,3 +68,33 @@ export const SIGN_IN_FORM: AuthFormProps[] = [
     type: "password",
   },
 ];
+
+export const FORGOT_PASSWORD_FORM: AuthFormProps[] = [
+  {
+    id: "1",
+    inputType: "input",
+    placeholder: "Ex@gmail.com",
+    label: "",
+    name: "email",
+    type: "email",
+  },
+];
+
+export const RESET_PASSWORD_FORM: AuthFormProps[] = [
+  {
+    id: "1",
+    inputType: "input",
+    placeholder: "New Password",
+    label: "",
+    name: "newPassword",
+    type: "password",
+  },
+  {
+    id: "2",
+    inputType: "input",
+    placeholder: "Confirm New Password",
+    label: "",
+    name: "confirmPassword",
+    type: "password",
+  },
+];

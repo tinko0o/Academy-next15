@@ -23,5 +23,5 @@ export const SignUpSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["confirmPassword"], // Gắn lỗi vào confirmPassword
+    path: ["confirmPassword"],
   });

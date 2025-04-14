@@ -1,3 +1,4 @@
+import { CONSTANTS } from "@/constants";
 import { ApiResponse } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -5,6 +6,33 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+//refresh token
+export const refreshToken = (
+  onSuccess?: (token: string) => void,
+  onError?: (error: string) => void
+): void => {
+  apiRequestWithCallbacks<{ access_token: string }>(
+    "POST",
+    CONSTANTS.api.AUTH.REFRESH_TOKEN,
+    null,
+    {
+      onSuccess: (data) => {
+        if (!data?.access_token) {
+          onError?.("No access token received");
+          return;
+        }
+        localStorage.setItem("access_token", data.access_token);
+        onSuccess?.(data.access_token);
+      },
+      onError: (error) => {
+        localStorage.removeItem("access_token");
+        onError?.(error || "Session expired. Please login again.");
+      },
+    }
+  );
+};
+
 //custom function to api request
 const resolveEndpoint = (
   endpoint: string | ((...args: (string | number)[]) => string),
@@ -114,5 +142,64 @@ export async function apiRequest<T>(
     return data;
   } catch (error) {
     throw new Error((error as Error).message || "Network Error");
+  }
+}
+// api request with bearer token
+export async function apiRequestWithToken<T>(
+  method: HttpMethod = "GET",
+  endpoint: string | ((...args: (string | number)[]) => string),
+  body?: unknown,
+  headers: HeadersType = {},
+  signal?: AbortSignal,
+  ...args: (string | number)[]
+): Promise<ApiResponse<T>> {
+  const accessToken = localStorage.getItem("access_token");
+
+  try {
+    return await apiRequest<T>(
+      method,
+      endpoint,
+      body,
+      {
+        ...headers,
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      signal,
+      ...args
+    );
+  } catch (error: unknown) {
+    const isUnauthorized =
+      (error as Error).message?.toLowerCase().includes("unauthorized") ||
+      (error as Error).message?.includes("401");
+
+    if (!isUnauthorized) {
+      throw error;
+    }
+
+    return new Promise((resolve, reject) => {
+      refreshToken(
+        async (newAccessToken) => {
+          try {
+            const response = await apiRequest<T>(
+              method,
+              endpoint,
+              body,
+              {
+                ...headers,
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+              signal,
+              ...args
+            );
+            resolve(response);
+          } catch (err) {
+            reject(err);
+          }
+        },
+        (error) => {
+          reject(new Error(error));
+        }
+      );
+    });
   }
 }

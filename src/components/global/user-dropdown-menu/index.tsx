@@ -18,12 +18,19 @@ type UserDropdownMenuProps = {
   className?: string;
   user: User;
   type: "dropdown" | "sidebar";
+  dropdownItems: {
+    label?: string;
+    onClick?: () => void;
+    danger?: boolean;
+    separator?: boolean;
+  }[];
 };
 
 export default function UserDropdownMenu({
   className,
   user,
   type,
+  dropdownItems,
 }: UserDropdownMenuProps) {
   switch (type) {
     case "dropdown":
@@ -48,22 +55,22 @@ export default function UserDropdownMenu({
               <UserCard user={user} />
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="my-2" />
-            <DropdownMenuItem className="hover:bg-gray-100 rounded-md px-2 py-1">
-              Học tập
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-gray-100 rounded-md px-2 py-1">
-              Giỏ hàng của tôi
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-gray-100 rounded-md px-2 py-1">
-              Mong muốn
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-gray-100 rounded-md px-2 py-1">
-              Bảng điều khiển của giảng viên
-            </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-2" />
-            <DropdownMenuItem className="text-red-500 hover:bg-red-100 rounded-md px-2 py-1">
-              Đăng xuất
-            </DropdownMenuItem>
+            {dropdownItems.map((item, idx) =>
+              item.separator ? (
+                <DropdownMenuSeparator key={`sep-${idx}`} className="my-2" />
+              ) : (
+                <DropdownMenuItem
+                  key={item.label}
+                  onClick={item.onClick}
+                  className={cn(
+                    "hover:bg-gray-100 rounded-md px-2 py-1",
+                    item.danger && "text-red-500 hover:bg-red-100"
+                  )}
+                >
+                  {item.label}
+                </DropdownMenuItem>
+              )
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

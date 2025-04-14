@@ -1,3 +1,5 @@
+"use client";
+import { useEffect } from "react";
 import Search from "@/components/global/search";
 
 import UserDropdownMenu from "@/components/global/user-dropdown-menu";
@@ -9,18 +11,56 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useAuthUser } from "@/hooks/authentication";
-import { User } from "@/types";
-import { useQueryClient } from "@tanstack/react-query";
+import { useAuthSignOut } from "@/hooks/authentication";
 
 import { AlignJustify, ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useUserInFor } from "@/hooks/user";
+
 const NavBar = () => {
-  //
-  // const queryClient = useQueryClient();
-  // const user = queryClient.getQueryData<User>(["authUser"]);
-  const { data: user, isLoading, isError, error, refetch } = useAuthUser();
-  console.log(user);
+  const { data: user } = useUserInFor();
+  const { signOut } = useAuthSignOut();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      const params = new URLSearchParams(window.location.search);
+      params.delete("token");
+      const newUrl =
+        window.location.pathname + (params.toString() ? `?${params}` : "");
+      router.replace(newUrl);
+    }
+  }, [user, router]);
+  const dropdownItems: {
+    label?: string;
+    onClick?: () => void;
+    danger?: boolean;
+    separator?: boolean;
+  }[] = [
+    {
+      label: "Học tập",
+      onClick: () => console.log("Go to học tập"),
+    },
+    {
+      label: "Giỏ hàng của tôi",
+      onClick: () => console.log("Go to giỏ hàng"),
+    },
+    {
+      label: "Mong muốn",
+      onClick: () => console.log("Go to mong muốn"),
+    },
+    {
+      label: "Bảng điều khiển của giảng viên",
+      onClick: () => console.log("Go to dashboard"),
+    },
+    { separator: true },
+    {
+      label: "Đăng xuất",
+      onClick: () => signOut(),
+      danger: true,
+    },
+  ];
   return (
     <div className="flex w-full items-center justify-between px-4">
       <Search glass={true} placeholder="Search for anything" />
@@ -34,7 +74,13 @@ const NavBar = () => {
         <SheetContent className="dark:bg-black">
           <SheetHeader>
             <SheetTitle></SheetTitle>
-            {user && <UserDropdownMenu user={user} type="sidebar" />}
+            {user && (
+              <UserDropdownMenu
+                user={user}
+                type="sidebar"
+                dropdownItems={dropdownItems}
+              />
+            )}
 
             {/* <Separator />
             <div className="flex items-center justify-between">
@@ -64,7 +110,11 @@ const NavBar = () => {
             <div className="flex items-center">{/*  */}</div>
           </div>
         ) : (
-          <UserDropdownMenu user={user} type="dropdown" />
+          <UserDropdownMenu
+            user={user}
+            type="dropdown"
+            dropdownItems={dropdownItems}
+          />
         )}
       </div>
     </div>

@@ -1,4 +1,4 @@
-import SignInForm from "@/components/forms/sign-in";
+"use client";
 import {
   Card,
   CardContent,
@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/card";
 import AuthButton from "@/components/global/auth-button";
 import Link from "next/link";
+import ForgotPasswordForm from "@/components/forms/forgot-password";
 
-const SignInPage = () => {
+const ForgotPasswordPage = () => {
   return (
     <>
       <div className="flex min-h-svh flex-col items-center justify-center gap-6 dark:bg-gray-dark bg-muted p-6 md:p-10">
@@ -32,26 +33,15 @@ const SignInPage = () => {
                       Or continue with
                     </span>
                   </div>
-                  <SignInForm />
-                  <div className="text-center text-sm leading-6 text-muted-foreground">
-                    <p>
-                      Don&apos;t have an account?{" "}
-                      <Link
-                        className="underline underline-offset-4 text-black"
-                        href={"/sign-up"}
-                      >
-                        Sign up
-                      </Link>
-                    </p>
-                    <p>
-                      <Link
-                        className="underline underline-offset-4 text-black"
-                        href={"/forgot-password"}
-                      >
-                        Reset password
-                      </Link>{" "}
-                      If Forgot your password?
-                    </p>
+                  <ForgotPasswordForm />
+                  <div className="text-center text-sm">
+                    Already have an account?{" "}
+                    <Link
+                      className="underline underline-offset-4"
+                      href={"/sign-in"}
+                    >
+                      Sign in
+                    </Link>
                   </div>
                 </div>
               </CardContent>
@@ -68,4 +58,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default ForgotPasswordPage;

@@ -20,6 +20,9 @@ export const APIS: EndpointProps = {
     REGISTER: `${BASE_URL}/auth/register`,
     LOGOUT: `${BASE_URL}/auth/logout`,
     VERIFY_EMAIL: `${BASE_URL}/auth/verify-email`,
+    REFRESH_TOKEN: `${BASE_URL}/auth/refresh-token`,
+    FORGOT_PASSWORD: `${BASE_URL}/auth/forgot-password`,
+    RESET_PASSWORD: `${BASE_URL}/auth/reset-password`,
   },
   OAUTH2: {
     GOOGLE: `${BASE_URL}/oauth2/authorization/google`,

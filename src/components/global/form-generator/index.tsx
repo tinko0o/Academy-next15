@@ -10,10 +10,13 @@ type FormGeneratorProps = {
   options?: { value: string; label: string; id: string }[];
   label?: string;
   placeholder: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
   name: string;
   errors: FieldErrors<FieldValues>;
   lines?: number;
+  disabled?: boolean;
+  hidden?: boolean;
 };
 
 export const FormGenerator = ({
@@ -26,8 +29,11 @@ export const FormGenerator = ({
   errors,
   type,
   lines,
+  disabled,
+  hidden,
 }: FormGeneratorProps) => {
   const id = btoa(name);
+  if (hidden) return null;
   switch (inputType) {
     case "input":
       return (
@@ -39,6 +45,7 @@ export const FormGenerator = ({
             placeholder={placeholder}
             className="bg-themeBlack border-themeGray text-themeTextGray"
             {...register(name)}
+            disabled={disabled}
           />
           <ErrorMessage
             errors={errors}
@@ -59,6 +66,7 @@ export const FormGenerator = ({
             id={`select-${label}`}
             className="w-full bg-transparent border-[1px] p-3 rounded-lg"
             {...register(name)}
+            disabled={disabled}
           >
             {options?.length &&
               options.map((option) => (
@@ -92,6 +100,7 @@ export const FormGenerator = ({
             placeholder={placeholder}
             {...register(name)}
             rows={lines}
+            disabled={disabled}
           />
           <ErrorMessage
             errors={errors}

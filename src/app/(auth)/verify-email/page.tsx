@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function VerifyEmail() {
+export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 

@@ -11,8 +11,8 @@ export const UserCard = ({ user }: UserCardProps) => {
       <Avatar className="size-12">
         <AvatarImage src={user.avatar || "https://github.com/shadcn.png"} />
         <AvatarFallback>
-          {user.firstName.charAt(0)}
-          {user.lastName.charAt(0)}
+          {(user.firstName && user.firstName.charAt(0)) || "U"}
+          {(user.lastName && user.lastName.charAt(0)) || "U"}
         </AvatarFallback>
       </Avatar>
       <div className="ml-3 flex-1 min-w-0">
