@@ -1,8 +1,8 @@
 import { Star, StarHalf } from "lucide-react";
 
 interface RatingProps {
-  rating: string;
-  reviews?: string | null | undefined;
+  rating: number;
+  reviews: number | null;
   onlyStar?: boolean;
 }
 
@@ -11,7 +11,7 @@ export default function RatingStar({
   reviews,
   onlyStar = false,
 }: RatingProps) {
-  let numericRating = Number(rating.replace(",", "."));
+  let numericRating = Number(rating);
 
   if (isNaN(numericRating)) {
     return null;

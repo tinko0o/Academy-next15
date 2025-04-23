@@ -39,6 +39,7 @@ const Header = () => {
               >
                 <Image
                   src="/images/logo/logo.svg"
+                  data-slot="avatar-image"
                   alt="logo"
                   width={50}
                   height={30}

@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import AuthButton from "@/components/global/auth-button";
+import { OauthButton } from "@/components/global/button";
 import SignUpForm from "@/components/forms/sign-up";
 import Link from "next/link";
 
@@ -27,7 +27,7 @@ const SignUpPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-6">
-                  <AuthButton />
+                  <OauthButton />
                   <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                     <span className="relative z-10 bg-background px-2 text-muted-foreground">
                       Or continue with

@@ -1,4 +1,4 @@
-import { UserCard } from "@/components/global/user-card";
+import { UserCard } from "@/components/global/card";
 import { Separator } from "@/components/ui/separator";
 import { CONSTANTS } from "@/constants";
 import { QuoteIcon } from "lucide-react";

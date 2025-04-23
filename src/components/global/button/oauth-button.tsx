@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useOAuth } from "@/hooks/authentication";
 import { Apple, Google } from "@/icons";
-const AuthButton = () => {
+export const OauthButton = () => {
   const { signInWithGoogle } = useOAuth();
   return (
     <div className="flex flex-col gap-4">
@@ -17,5 +17,3 @@ const AuthButton = () => {
     </div>
   );
 };
-
-export default AuthButton;

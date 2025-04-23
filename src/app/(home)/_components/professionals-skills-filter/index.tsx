@@ -22,31 +22,6 @@ const ProfessionalsSkillsFilter = () => {
         ]}
       />
       <ExploreSlider />
-      {/* <div className="flex">
-        <GroupCard
-          tagUrl="complete-python-bootcamp"
-          price="1000"
-          rateCount={"10000"}
-          rating="4"
-          subTilte="Learn Python like a Professional Start from the basics and go all the way to creating your own applications and games"
-          thumbnail={
-            "https://img-c.udemycdn.com/course/480x270/567828_67d0.jpg"
-          }
-          tilte="The Complete Python Bootcamp From Zero to Hero in Python"
-        />
-        <GroupCard
-          tagUrl="complete-python-bootcamp"
-          price="1000"
-          rateCount={"10000"}
-          rating="4"
-          subTilte="Learn Python like a Professional Start from the basics and go all the way to creating your own applications and games"
-          thumbnail={
-            "https://img-c.udemycdn.com/course/480x270/567828_67d0.jpg"
-          }
-          tilte="The Complete Python Bootcamp From Zero to Hero in Python"
-          bestSeller={true}
-        />
-      </div> */}
     </div>
   );
 };

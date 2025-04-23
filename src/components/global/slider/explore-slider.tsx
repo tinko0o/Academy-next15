@@ -2,10 +2,10 @@
 import { Slider } from "@/components/global/slider";
 import { SwiperSlide } from "swiper/react";
 import Skeleton from "@/components/global/skeleton";
-import GroupCard from "../group-card";
 import "swiper/css";
 import "swiper/css/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CourseCard } from "../card";
 type Props = {
   query?: string;
 };
@@ -16,136 +16,36 @@ const ExploreSlider = ({}: Props) => {
   const status = 200;
   const groups = [
     {
-      tagUrl: "1",
-      tilte: "string;",
+      id: 0,
+      title: "string;",
+      visible_instructors: ["string"],
+      tagUrl: "string;",
+      price: "string;",
+      image: "./images/default/media.png",
+      href: "string;",
       subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
+      avg_rating: 4,
+      num_reviews: 4,
+      bestSeller: false,
       preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "2",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "3",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "4",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "5",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "6",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "7",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "8",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "9",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "10",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "11",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "12",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
-    },
-    {
-      tagUrl: "13",
-      tilte: "string;",
-      subTilte: "string;",
-      thumbnail: "",
-      rating: "2",
-      rateCount: "100",
-      preview: "string;",
-      price: "1000",
     },
   ];
+  for (let i = 0; i < 10; i++) {
+    groups.push({
+      id: i + 1,
+      title: "string;",
+      visible_instructors: ["string"],
+      tagUrl: "string;",
+      price: "string;",
+      image: "./images/default/media.png",
+      href: "string;",
+      subTilte: "string;",
+      avg_rating: 2.2,
+      num_reviews: 4,
+      bestSeller: false,
+      preview: "string;",
+    });
+  }
   return (
     status === 200 &&
     groups.length > 0 &&
@@ -202,8 +102,8 @@ const ExploreSlider = ({}: Props) => {
             }}
           >
             {groups.map((group) => (
-              <SwiperSlide className="w-80" key={group.tagUrl}>
-                <GroupCard {...group} />
+              <SwiperSlide className="w-80" key={group.id}>
+                <CourseCard type="medium" data={group} />
               </SwiperSlide>
             ))}
 

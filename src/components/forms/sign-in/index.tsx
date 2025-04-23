@@ -6,9 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CONSTANTS } from "@/constants";
 import { useAuthSignIn } from "@/hooks/authentication";
 
-type Props = {};
-
-const SignInForm = (props: Props) => {
+const SignInForm = () => {
   const { isPending, onAuthenticateUser, register, errors } = useAuthSignIn();
 
   return (

@@ -26,7 +26,9 @@ export const useUserInFor = () => {
         throw new Error(res.message || "Phiên đăng nhập hết hạn");
       }
       localStorage.setItem("access_token", token);
-      return res.data;
+      const fullName = res.data.firstName + " " + res.data.lastName;
+      const dataUser: User = { ...res.data, fullName };
+      return dataUser;
     },
     staleTime: 1000 * 60 * 60, // 1 hour
   });
